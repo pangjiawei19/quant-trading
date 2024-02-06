@@ -1,10 +1,13 @@
 import datetime
+import akshare as ak
 import pandas as pd
+
 import util.time_util as timeutil
 
 # target = 'sh000300'
 # target = 'sh000905'
-target = 'sh000852'
+target = 'sh000852'  # csi1000
+csi1000_code = 'sh000852'
 
 # stock_zh_index_daily_tx_df = ak.stock_zh_index_daily_tx(symbol=target)
 # print(stock_zh_index_daily_tx_df)
@@ -12,22 +15,16 @@ target = 'sh000852'
 # stock_zh_index_daily_df = ak.stock_zh_index_daily(symbol=target)
 # print(stock_zh_index_daily_df)
 
+start_date = datetime.date(2005, 2, 1)
 
-csi = pd.read_csv('../csv/csi1000_history.csv').set_index('date')
-csi.index = [timeutil.str2date(e) for e in csi.index]
-print(csi)
+csi1000_history = pd.read_csv('../csv/csi1000_history.csv').set_index('date')
+csi1000_history.index = [timeutil.str2date(e) for e in csi1000_history.index]
 
-start_date = datetime.date(2005, 1, 31)
+csi1000_history_df = csi1000_history.loc[start_date:, ['close']]
+print(csi1000_history_df)
 
-csi2 = csi.sort_index().loc[start_date:, ['收盘']]
-print(csi2)
+csi1000_daily_df = ak.stock_zh_index_daily(symbol=csi1000_code).set_index('date').loc[start_date:, ['close']]
+print(csi1000_daily_df)
 
-# d = csi2.loc[datetime.date(2024, 1, 26), '收盘']
-# print(d, type(d), float(d.replace(',', '')), type(float(d.replace(',', ''))))
-
-# df = pd.DataFrame({'month': [1, 4, 7, 10],
-#                    'year': [2012, 2014, 2013, 2014],
-#                    'sale': [55, 40, 84, 31]})
-# print(df)
-# df.set_index('month')
-# print(df)
+csi1000 = csi1000_daily_df.combine_first(csi1000_history_df)
+print(csi1000)
