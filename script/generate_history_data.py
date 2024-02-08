@@ -1,30 +1,47 @@
 import datetime
+
 import akshare as ak
 import pandas as pd
 
 import util.time_util as timeutil
 
-# target = 'sh000300'
-# target = 'sh000905'
-target = 'sh000852'  # csi1000
 csi1000_code = 'sh000852'
-
-# stock_zh_index_daily_tx_df = ak.stock_zh_index_daily_tx(symbol=target)
-# print(stock_zh_index_daily_tx_df)
-
-# stock_zh_index_daily_df = ak.stock_zh_index_daily(symbol=target)
-# print(stock_zh_index_daily_df)
+hs300_code = 'sh000300'
+csi500_code = 'sh000905'
 
 start_date = datetime.date(2005, 2, 1)
 
-csi1000_history = pd.read_csv('../csv/csi1000_history.csv').set_index('date')
-csi1000_history.index = [timeutil.str2date(e) for e in csi1000_history.index]
 
-csi1000_history_df = csi1000_history.loc[start_date:, ['close']]
-print(csi1000_history_df)
+def generate_csi1000(start_date):
+    history_df = pd.read_csv('../csv/csi1000_history.csv').set_index('date')
+    history_df.index = [timeutil.str2date(e) for e in history_df.index]
+    history_df = history_df.loc[start_date:, ['close']]
 
-csi1000_daily_df = ak.stock_zh_index_daily(symbol=csi1000_code).set_index('date').loc[start_date:, ['close']]
-print(csi1000_daily_df)
+    daily_df = ak.stock_zh_index_daily(symbol=csi1000_code).set_index('date').loc[start_date:, ['close']]
 
-csi1000 = csi1000_daily_df.combine_first(csi1000_history_df)
-print(csi1000)
+    df = daily_df.combine_first(history_df)
+    return df
+
+
+def generate_hs300(start_date):
+    daily_df = ak.stock_zh_index_daily(symbol=hs300_code).set_index('date').loc[start_date:, ['close']]
+    return daily_df
+
+def generate_csi500(start_date):
+    daily_df = ak.stock_zh_index_daily(symbol=csi500_code).set_index('date').loc[start_date:, ['close']]
+    return daily_df
+
+
+csi1000 = generate_csi1000(start_date)
+hs300 = generate_hs300(start_date)
+csi500 = generate_csi500(start_date)
+
+
+basic = pd.DataFrame()
+basic['csi1000'] = csi1000['close']
+basic['hs300'] = hs300['close']
+basic['csi500'] = csi500['close']
+
+print(basic)
+
+basic.to_csv('../csv/basic_data.csv', index_label='datetime')
