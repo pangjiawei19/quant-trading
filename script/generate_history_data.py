@@ -27,6 +27,7 @@ def generate_hs300(start_date):
     daily_df = ak.stock_zh_index_daily(symbol=hs300_code).set_index('date').loc[start_date:, ['close']]
     return daily_df
 
+
 def generate_csi500(start_date):
     daily_df = ak.stock_zh_index_daily(symbol=csi500_code).set_index('date').loc[start_date:, ['close']]
     return daily_df
@@ -35,7 +36,6 @@ def generate_csi500(start_date):
 csi1000 = generate_csi1000(start_date)
 hs300 = generate_hs300(start_date)
 csi500 = generate_csi500(start_date)
-
 
 basic = pd.DataFrame()
 basic['csi1000'] = csi1000['close']
