@@ -1,6 +1,6 @@
 import datetime
 import pandas as pd
-import time_util as timeutil
+import util.time_util as timeutil
 
 
 # 读取指定起止日期之间的交易日序列
@@ -39,7 +39,6 @@ def get_history_data(index_ids=None, end_date=None):
     # 从csv文件获取指数价格数据
     data = pd.read_csv('../csv/basic_data.csv').set_index('datetime')
     data.index = [timeutil.str2date(e) for e in data.index]
-    print('基础数据起止日期：%s，%s' % (data.index[0], data.index[-1]))
     if index_ids is not None:
         data = data.loc[:, index_ids]
     if end_date is not None:
