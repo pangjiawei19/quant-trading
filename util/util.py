@@ -1,11 +1,16 @@
 import datetime
+import os
+
 import pandas as pd
-import util.time_util as timeutil
+
+from util import time_util as timeutil
+
+current_directory = os.getcwd()
 
 
 # 读取指定起止日期之间的交易日序列
 def get_trading_dates(start_date=None, end_date=None):
-    dates = pd.read_csv('../csv/trading_date.csv')['trade_date'].to_list()
+    dates = pd.read_csv(current_directory + '/csv/trading_date.csv')['trade_date'].to_list()
     dates = [timeutil.str2date(e, '%Y-%m-%d') for e in dates]
     if start_date is not None:
         dates = [e for e in dates if e >= start_date]
@@ -37,7 +42,7 @@ def get_history_data(index_ids=None, end_date=None):
         data: df(date*, index1, index2, ...), 多个指数的历史收盘价序列
     """
     # 从csv文件获取指数价格数据
-    data = pd.read_csv('../csv/basic_data.csv').set_index('datetime')
+    data = pd.read_csv(current_directory + '/csv/basic_data.csv').set_index('datetime')
     data.index = [timeutil.str2date(e) for e in data.index]
     if index_ids is not None:
         data = data.loc[:, index_ids]
