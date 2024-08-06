@@ -18,6 +18,7 @@ wgt_calendar_csi1000 = strategy.calendar_strategy(data, start_date, end_date,
 wgt_rotation_20 = strategy.rotation_strategy(data, start_date, end_date,
                                              params={'day': 20, 'index1': 'hs300', 'index2': 'csi500'})
 target_wgt = 0.5 * wgt_calendar_csi1000 + 0.5 * wgt_rotation_20  # 多策略目标组合整合
+# target_wgt = 1 * wgt_rotation_20  # 多策略目标组合整合
 
 # 产生每日持仓权重
 hold_wgt = target_wgt  # 假设每天都可以准确地执行交易计划
@@ -33,6 +34,7 @@ res['account'] = account_res
 
 # 展示净值曲线图和业绩指标表
 res.loc[:, ['hs300', 'csi500', 'account']].plot(figsize=(16, 8), grid=True)
-# cal_period_perf_indicator(res.loc[:, ['hs300', 'csi500', 'account']])
+performance = util.cal_period_perf_indicator(res.loc[:, ['hs300', 'csi500', 'account']])
+print(performance)
 
 plt.show()
