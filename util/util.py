@@ -76,7 +76,8 @@ def cal_period_perf_indicator(data):
 
     ret = data.pct_change()
     # annret = np.nanmean(ret) * 242 # 单利
-    annret = (data[-1] / 1) ** (242 / len(data)) - 1  # 年化收益率（Annual Return），表示一年内的平均收益
+    # annret = (data.iloc[-1] / 1) ** (242 / len(data)) - 1  # 年化收益率（Annual Return），表示一年内的平均收益
+    annret = (data.iloc[-1] / data.iloc[0]) ** (242 / len(data)) - 1  # 年化收益率（Annual Return），表示一年内的平均收益
     annvol = np.nanstd(ret) * np.sqrt(242)  # 年化波动率（AnnVol），表示收益的波动性
     sr = annret / annvol  # 夏普比率（Sharpe Ratio），收益相比于波动的比例，表示风险下的回报
     dd = get_drawdown(data)  # 回撤（Maximum Drawdown），一段时间内各个时间点的回撤
@@ -84,13 +85,3 @@ def cal_period_perf_indicator(data):
     calmar = annret / -mdd  # 卡尔玛比率（Calmar Ratio），年化收益率与最大回撤的比率，表示单位最大回撤下的收益
 
     return [annret, annvol, sr, mdd, calmar]
-
-
-if __name__ == '__main__':
-    start_date = datetime.date(2023, 12, 25)
-    end_date = datetime.date(2024, 1, 5)
-    dates = get_trading_dates(start_date, end_date)
-    print(dates)
-    print(get_date_count_in_month(dates))
-    print(get_history_data())
-    print(get_history_data(['hs300', 'csi1000'], datetime.date(2021, 1, 1)))
