@@ -30,7 +30,7 @@ def calendar_strategy(data, start_date, end_date, params):
     dates0 = util.get_trading_dates(start_date0, end_date)
     dates0_rank = util.get_date_count_in_month(dates0)
     target_wgt = pd.DataFrame(data=0, index=dates0, columns=data.columns)
-    target_wgt[index_id] = [1 if (e >= t1 and e <= t2) else 0 for e in dates0_rank]
+    target_wgt[index_id] = [1 if (t1 <= e <= t2) else 0 for e in dates0_rank]
     target_wgt = target_wgt.loc[start_date:end_date]
     return target_wgt
 
@@ -73,14 +73,3 @@ def rotation_strategy(data, start_date, end_date, params):
 
     target_wgt = target_wgt.loc[start_date:end_date].fillna(0)
     return target_wgt
-
-
-if __name__ == '__main__':
-    data = util.get_history_data()
-    start_date = datetime.date(2024, 5, 1)
-    end_date = datetime.date(2024, 5, 30)
-    # params = {'index_id': 'hs300', 't1': 1, 't2': 5}
-    # print(calendar_strategy(data, start_date, end_date, params))
-
-    params = {'day': 20, 'index1': 'hs300', 'index2': 'csi500'}
-    print(rotation_strategy(data, start_date, end_date, params))

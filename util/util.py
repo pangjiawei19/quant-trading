@@ -1,4 +1,3 @@
-import datetime
 import os
 
 import numpy as np
@@ -63,7 +62,7 @@ def get_drawdown(p):
     return dd  # 每个元素表示对应时间点的回撤
 
 
-def cal_period_perf_indicator(data):
+def cal_period_perf_indicator(data, is_real_value=False):
     """
     计算区间业绩指标:输入必须是日频净值
     """
@@ -71,13 +70,14 @@ def cal_period_perf_indicator(data):
         res = pd.DataFrame(index=data.columns,
                            columns=['AnnRet', 'AnnVol', 'SR', 'MaxDD', 'Calmar'])  # 创建新的 df，index 是 data 的列名，即指数名称
         for col in data:
-            res.loc[col] = cal_period_perf_indicator(data[col])  # 递归调用，计算每个指数（每行）的业绩指标
+            res.loc[col] = cal_period_perf_indicator(data[col], is_real_value)  # 递归调用，计算每个指数（每行）的业绩指标
         return res
 
     ret = data.pct_change()
+    init_value = (data.iloc[0] if is_real_value else 1)
     # annret = np.nanmean(ret) * 242 # 单利
     # annret = (data.iloc[-1] / 1) ** (242 / len(data)) - 1  # 年化收益率（Annual Return），表示一年内的平均收益
-    annret = (data.iloc[-1] / data.iloc[0]) ** (242 / len(data)) - 1  # 年化收益率（Annual Return），表示一年内的平均收益
+    annret = (data.iloc[-1] / init_value) ** (242 / len(data)) - 1  # 年化收益率（Annual Return），表示一年内的平均收益
     annvol = np.nanstd(ret) * np.sqrt(242)  # 年化波动率（AnnVol），表示收益的波动性
     sr = annret / annvol  # 夏普比率（Sharpe Ratio），收益相比于波动的比例，表示风险下的回报
     dd = get_drawdown(data)  # 回撤（Maximum Drawdown），一段时间内各个时间点的回撤
