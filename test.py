@@ -25,4 +25,7 @@ import util.util as util
 # print(strategy.rotation_strategy(data, start_date, end_date, params))
 
 # --- backtesting test ---
-import app.backtesting as backtesting
+# import app.backtesting as backtesting
+
+# --- invest test ---
+import app.investing as investing
