@@ -3,7 +3,6 @@ import datetime
 import util.strategy as strategy
 import util.util as util
 
-
 # --- util test ---
 # start_date = datetime.date(2023, 12, 25)
 # end_date = datetime.date(2024, 1, 5)
@@ -28,4 +27,7 @@ import util.util as util
 # import app.backtesting as backtesting
 
 # --- invest test ---
-import app.investing as investing
+# import app.investing as investing
+
+# --- analyse test ---
+import app.analysing as analysing
