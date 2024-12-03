@@ -1,7 +1,22 @@
 import datetime
+import matplotlib.pyplot as plt
 
-import util.strategy as strategy
-import util.util as util
+# --- backtesting test ---
+import app.backtesting as backtesting
+
+start_date = datetime.date(2022, 1, 1)  # 回测起始日期
+end_date = datetime.date(2024, 11, 1)  # 回测截止日期
+params = {'day': 20, 'index1': 'hs300', 'index2': 'csi500'}
+results = backtesting.test(start_date, end_date, params)
+print(results)
+plt.show()
+
+# --- invest test ---
+# import app.investing as investing
+
+# --- analyse test ---
+# import app.analysing as analysing
+
 
 # --- util test ---
 # start_date = datetime.date(2023, 12, 25)
@@ -13,7 +28,6 @@ import util.util as util
 # df = util.get_history_data(['hs300', 'csi1000'], datetime.date(2024, 5, 31))
 # print(df)
 # print(util.cal_period_perf_indicator(df, True))
-
 # --- strategy test ---
 # data = util.get_history_data()
 # start_date = datetime.date(2024, 5, 1)
@@ -22,12 +36,3 @@ import util.util as util
 # print(strategy.calendar_strategy(data, start_date, end_date, params))
 # params = {'index1': 'hs300', 'index2': 'csi500', 'day': 20}
 # print(strategy.rotation_strategy(data, start_date, end_date, params))
-
-# --- backtesting test ---
-# import app.backtesting as backtesting
-
-# --- invest test ---
-# import app.investing as investing
-
-# --- analyse test ---
-import app.analysing as analysing
