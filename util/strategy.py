@@ -17,10 +17,8 @@ def calendar_strategy(data, start_date, end_date, params):
     Output:
         target_wgt: df(trade_date*, index1, index2, ...) 目标权重
     """
-    if type(start_date) is str:
-        start_date = timeutil.str2date(start_date)
-    if type(end_date) is str:
-        end_date = timeutil.str2date(end_date)
+    start_date = timeutil.check_str2date(start_date)
+    end_date = timeutil.check_str2date(end_date)
 
     index_id = params['index_id']
     t1 = params['t1']
@@ -46,10 +44,8 @@ def rotation_strategy(data, start_date, end_date, params):
     Output:
         target_wgt: df(trade_date*, index1, index2, ...) 目标权重
     """
-    if type(start_date) is str:
-        start_date = timeutil.str2date(start_date)
-    if type(end_date) is str:
-        end_date = timeutil.str2date(end_date)
+    start_date = timeutil.check_str2date(start_date)
+    end_date = timeutil.check_str2date(end_date)
 
     day = params['day']
     index1 = params['index1']
