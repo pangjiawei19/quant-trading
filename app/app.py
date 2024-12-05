@@ -53,6 +53,9 @@ def backtest(start_date, end_date, params):
     # 调用策略模块生成目标组合权重
     hold_wgt = generate_target_wgt(data, start_date, end_date, params)  # 假设每天都可以准确地执行交易计划
 
+    # 展示换手情况
+    hold_wgt[[params['index1'], params['index2']]].plot(figsize=(16, 8), kind='area', stacked=True, grid=True)
+
     # 计算组合业绩
     return calculate_performance(start_date, end_date, hold_wgt, params)
 
