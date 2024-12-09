@@ -1,17 +1,26 @@
+import datetime
 import os
 
+import akshare as ak
 import numpy as np
 import pandas as pd
 
-import util.time_util as timeutil
+from util import time_util
 
 current_directory = os.getcwd()
+
+CODE_DICT = {
+    'csi1000': 'sh000852',
+    'hs300': 'sh000300',
+    'csi500': 'sh000905'
+}
+BASIC_DATA_START_DATE = datetime.date(2005, 2, 1)
 
 
 # 读取指定起止日期之间的交易日序列
 def get_trading_dates(start_date=None, end_date=None):
     dates = pd.read_csv(current_directory + '/csv/trading_date.csv')['trade_date'].to_list()
-    dates = [timeutil.str2date(e, '%Y-%m-%d') for e in dates]
+    dates = [time_util.str2date(e, '%Y-%m-%d') for e in dates]
     if start_date is not None:
         dates = [e for e in dates if e >= start_date]
     if end_date is not None:
@@ -43,8 +52,13 @@ def get_history_data(index_ids=None, end_date=None):
         data: df(date*, index1, index2, ...), 多个指数的历史收盘价序列
     """
     # 从csv文件获取指数价格数据
-    data = pd.read_csv(current_directory + '/csv/basic_data.csv').set_index('datetime')
-    data.index = [timeutil.str2date(e) for e in data.index]
+    # data = pd.read_csv(current_directory + '/csv/basic_data.csv').set_index('datetime')
+    # data.index = [time_util.str2date(e) for e in data.index]
+
+    # 动态获取指数价格数据
+    codeKeys = index_ids if index_ids is not None else CODE_DICT.keys()
+    data = generate_basic_data(codeKeys)
+
     if index_ids is not None:
         data = data.loc[:, index_ids]
     if end_date is not None:
@@ -85,3 +99,22 @@ def cal_period_perf_indicator(data, is_real_value=False):
     calmar = annret / -mdd  # 卡尔玛比率（Calmar Ratio），年化收益率与最大回撤的比率，表示单位最大回撤下的收益
 
     return [annret, annvol, sr, mdd, calmar]
+
+
+def generate_history_data_by_code(code, start_date):
+    daily_df = ak.stock_zh_index_daily(symbol=code).set_index('date').loc[start_date:, ['close']]
+    if code == CODE_DICT['csi1000']:
+        history_df = pd.read_csv(current_directory + '/csv/csi1000_history.csv').set_index('date')
+        history_df.index = [time_util.str2date(e) for e in history_df.index]
+        history_df = history_df.loc[start_date:, ['close']]
+        daily_df = daily_df.combine_first(history_df)
+
+    return daily_df
+
+
+def generate_basic_data(codeKeys, start_date=BASIC_DATA_START_DATE):
+    data = pd.DataFrame()
+    for key in codeKeys:
+        daily_df = generate_history_data_by_code(CODE_DICT[key], start_date)
+        data[key] = daily_df['close']
+    return data

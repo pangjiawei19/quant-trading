@@ -1,0 +1,1 @@
+from script import generate_history_data
