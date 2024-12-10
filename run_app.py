@@ -1,7 +1,4 @@
 import datetime
-import util.strategy as strategy
-import util.util as util
-import matplotlib.pyplot as plt
 
 import app.app as app
 
@@ -23,11 +20,15 @@ end_date = datetime.date(2017, 4, 1)  # 回测截止日期
 # print(target_hold)
 
 # --- analyse test ---
-results = app.analyse(params, start_date, end_date)
-print('分析结果（%s-%s）：' % (start_date, end_date))
-print(results)
-plt.show()
+# results = app.analyse(params, start_date, end_date)
+# print('分析结果（%s-%s）：' % (start_date, end_date))
+# print(results)
+# plt.show()
 
+# --- record_hold test ---
+hold_info = {'hs300': 3000, 'csi500': 50000, 'amount': 100000}
+record_date = '2021-8-10'
+app.record_hold(hold_info, record_date)
 
 # --- util test ---
 # start_date = datetime.date(2023, 12, 25)

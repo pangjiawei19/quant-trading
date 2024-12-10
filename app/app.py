@@ -98,3 +98,21 @@ def analyse(params, start_date=None, end_date=None):
 
     # 计算净值
     return calculate_performance(start_date, end_date, hold_wgt, params)
+
+
+def record_hold(hold_info, record_date):
+    record_date = time_util.check_str2date(record_date)
+    hold_mv = pd.read_csv(current_directory + '/csv/hold_record.csv').set_index('date')
+    hold_mv.index = [time_util.str2date(e) for e in hold_mv.index]
+
+    start_date = record_date
+    if len(hold_mv) > 0:
+        start_date = hold_mv.index[-1] + datetime.timedelta(days=1)
+    trading_dates = util.get_trading_dates(start_date, record_date)
+
+    for date in trading_dates:
+        for index in hold_info.keys():
+            hold_mv.loc[date, index] = hold_info[index]
+
+    hold_mv = hold_mv.fillna(0)
+    hold_mv.to_csv(current_directory + '/csv/hold_record.csv', index_label='date', header=True)
