@@ -26,8 +26,8 @@ end_date = datetime.date(2017, 4, 1)  # 回测截止日期
 # plt.show()
 
 # --- record_hold test ---
-hold_info = {'hs300': 3000, 'csi500': 50000, 'amount': 100000}
-record_date = '2021-8-10'
+hold_info = {'hs300': 5000, 'csi500': 50000, 'amount': 200000}
+record_date = '2024-12-16'
 app.record_hold(hold_info, record_date)
 
 # --- util test ---

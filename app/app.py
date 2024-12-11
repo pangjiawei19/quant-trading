@@ -105,14 +105,19 @@ def record_hold(hold_info, record_date):
     hold_mv = pd.read_csv(current_directory + '/csv/hold_record.csv').set_index('date')
     hold_mv.index = [time_util.str2date(e) for e in hold_mv.index]
 
-    start_date = record_date
+    # 中间空缺记录
     if len(hold_mv) > 0:
         start_date = hold_mv.index[-1] + datetime.timedelta(days=1)
-    trading_dates = util.get_trading_dates(start_date, record_date)
+        end_date = record_date - datetime.timedelta(days=1)
+        trading_dates = util.get_trading_dates(start_date, end_date)
 
-    for date in trading_dates:
+        for date in trading_dates:
+            hold_mv.loc[date] = hold_mv.iloc[-1]
+
+    # 当天
+    if util.is_trading_date(record_date):
         for index in hold_info.keys():
-            hold_mv.loc[date, index] = hold_info[index]
+            hold_mv.loc[record_date, index] = hold_info[index]
 
     hold_mv = hold_mv.fillna(0)
     hold_mv.to_csv(current_directory + '/csv/hold_record.csv', index_label='date', header=True)

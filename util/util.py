@@ -28,6 +28,12 @@ def get_trading_dates(start_date=None, end_date=None):
     return dates
 
 
+def is_trading_date(date):
+    dates = pd.read_csv(current_directory + '/csv/trading_date.csv')['trade_date'].to_list()
+    dates = [time_util.str2date(e, '%Y-%m-%d') for e in dates]
+    return date in dates
+
+
 # 计算日期序列中每个日期在所在月中的序数
 def get_date_count_in_month(dates):
     cur_count = 1
