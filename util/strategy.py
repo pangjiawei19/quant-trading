@@ -1,4 +1,5 @@
 import datetime
+import math
 
 import pandas as pd
 
@@ -66,6 +67,23 @@ def rotation_strategy(data, start_date, end_date, params):
             target_wgt.loc[t, index1] = 1
         elif index1_last_value < index2_last_value and index2_last_value > 0:
             target_wgt.loc[t, index2] = 1
+
+    target_wgt = target_wgt.loc[start_date:end_date].fillna(0)
+    return target_wgt
+
+
+def minimalism_strategy(data, start_date, end_date):
+    start_date = timeutil.check_str2date(start_date)
+    end_date = timeutil.check_str2date(end_date)
+
+    dates0 = util.get_trading_dates(start_date, end_date)
+    data0 = data.reindex(index=dates0)
+
+    target_wgt = pd.DataFrame(0, index=data0.index, columns=data0.columns)
+    for t, row in target_wgt.iterrows():
+        for column_name in data0.columns:
+            if not math.isnan(data0.loc[t, column_name]):
+                target_wgt.loc[t, column_name] = 1
 
     target_wgt = target_wgt.loc[start_date:end_date].fillna(0)
     return target_wgt
