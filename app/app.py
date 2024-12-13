@@ -14,7 +14,8 @@ def generate_target_wgt(data, start_date, end_date, params):
     # 调用策略模块生成目标组合权重
     wgt_calendar_csi1000 = strategy.calendar_strategy(data, start_date, end_date,
                                                       params={'index_id': 'csi1000', 't1': 1, 't2': 5})
-    wgt_rotation_20 = strategy.rotation_strategy(data, start_date, end_date, params)
+    # wgt_rotation_20 = strategy.rotation_strategy(data, start_date, end_date, params)
+    wgt_rotation_20 = strategy.average_strategy(data, start_date, end_date)
 
     # target_wgt = 0.5 * wgt_calendar_csi1000 + 0.5 * wgt_rotation_20  # 多策略目标组合整合
     target_wgt = 1 * wgt_rotation_20  # 多策略目标组合整合
@@ -36,8 +37,9 @@ def calculate_performance(start_date, end_date, hold_wgt, params):
 
     # 展示净值曲线图和业绩指标表
     newColumns = params['codeKeys'] + [index_account]
-    res.loc[:, newColumns].plot(figsize=(16, 8), grid=True)
-    performance = util.cal_period_perf_indicator(res.loc[:, newColumns])
+    # res = res.loc[:, newColumns]
+    res.plot(figsize=(16, 8), grid=True)
+    performance = util.cal_period_perf_indicator(res)
     return performance
 
 
@@ -51,7 +53,6 @@ def backtest(start_date, end_date, params):
 
     # 调用策略模块生成目标组合权重
     hold_wgt = generate_target_wgt(data, start_date, end_date, params)  # 假设每天都可以准确地执行交易计划
-    print(hold_wgt)
 
     # 展示换手情况
     hold_wgt[params['codeKeys']].plot(figsize=(16, 8), kind='area', stacked=True, grid=True)

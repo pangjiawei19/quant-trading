@@ -3,9 +3,10 @@ import matplotlib.pyplot as plt
 
 import app.app as app
 
-params = {'day': 20, 'codeKeys': ['hs300', 'csi500']}
-start_date = datetime.date(2014, 1, 1)  # 回测起始日期
-end_date = datetime.date(2017, 4, 1)  # 回测截止日期
+params = {'day': 20, 'codeKeys': ['hs300Etf', 'csi500Etf', 'sp500Etf', 'nas100Etf', 'bondEtf']}
+# params = {'day': 20, 'codeKeys': ['hs300', 'csi500']}
+start_date = datetime.date(2023, 11, 1)  # 回测起始日期
+end_date = datetime.date(2024, 11, 1)  # 回测截止日期
 
 # --- backtesting test ---
 results = app.backtest(start_date, end_date, params)

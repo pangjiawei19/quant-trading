@@ -73,7 +73,7 @@ def rotation_strategy(data, start_date, end_date, params):
 
 
 def average_strategy(data, start_date, end_date):
-    start_date = timeutil.check_str2date(start_date)
+    start_date = timeutil.check_str2date(start_date) - datetime.timedelta(2)
     end_date = timeutil.check_str2date(end_date)
 
     dates0 = util.get_trading_dates(start_date, end_date)
