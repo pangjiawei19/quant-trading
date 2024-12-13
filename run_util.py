@@ -16,13 +16,13 @@ from util import util
 
 # --- strategy test ---
 # data = util.get_history_data()
-start_date = datetime.date(2012, 5, 20)
-end_date = datetime.date(2012, 6, 1)
+start_date = datetime.date(2018, 5, 20)
+end_date = datetime.date(2018, 6, 1)
 # params = {'index_id': 'hs300', 't1': 1, 't2': 5}
 # print(strategy.calendar_strategy(data, start_date, end_date, params))
 # params = {'index1': 'hs300', 'index2': 'csi500', 'day': 20}
 # hold_wgt = strategy.rotation_strategy(data, start_date, end_date, params)
 # print(hold_wgt)
 
-data = util.get_history_data(['hs300etf', 'csi500etf', 'sp500etf', 'nas100etf'])
-print(strategy.minimalism_strategy(data, start_date, end_date))
+data = util.get_history_data(['hs300Etf', 'csi500Etf', 'sp500Etf', 'nas100Etf', 'bondEtf'])
+print(strategy.average_strategy(data, start_date, end_date))

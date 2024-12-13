@@ -23,11 +23,9 @@ def generate_target_wgt(data, start_date, end_date, params):
 
 
 def calculate_performance(start_date, end_date, hold_wgt, params):
-    index1 = params['index1']
-    index2 = params['index2']
     index_account = 'account'
 
-    data = util.get_history_data([index1, index2], end_date=end_date)
+    data = util.get_history_data(params['codeKeys'], end_date=end_date)
     asset_ret = data.pct_change().loc[start_date:end_date]
     res = (1 + asset_ret).cumprod()
 
@@ -37,38 +35,36 @@ def calculate_performance(start_date, end_date, hold_wgt, params):
     res[index_account] = account_res
 
     # 展示净值曲线图和业绩指标表
-    res.loc[:, [index1, index2, index_account]].plot(figsize=(16, 8), grid=True)
-    performance = util.cal_period_perf_indicator(res.loc[:, [index1, index2, index_account]])
+    newColumns = params['codeKeys'] + [index_account]
+    res.loc[:, newColumns].plot(figsize=(16, 8), grid=True)
+    performance = util.cal_period_perf_indicator(res.loc[:, newColumns])
     return performance
 
 
 def backtest(start_date, end_date, params):
-    index1 = params['index1']
-    index2 = params['index2']
     # 设置回测参数
     start_date = time_util.check_str2date(start_date)
     end_date = time_util.check_str2date(end_date)
 
     # 读取基础数据
-    data = util.get_history_data([index1, index2], end_date=end_date)
+    data = util.get_history_data(params['codeKeys'], end_date=end_date)
 
     # 调用策略模块生成目标组合权重
     hold_wgt = generate_target_wgt(data, start_date, end_date, params)  # 假设每天都可以准确地执行交易计划
+    print(hold_wgt)
 
     # 展示换手情况
-    hold_wgt[[index1, index2]].plot(figsize=(16, 8), kind='area', stacked=True, grid=True)
+    hold_wgt[params['codeKeys']].plot(figsize=(16, 8), kind='area', stacked=True, grid=True)
 
     # 计算组合业绩
     return calculate_performance(start_date, end_date, hold_wgt, params)
 
 
 def invest(date, target_amount, params):
-    index1 = params['index1']
-    index2 = params['index2']
     date = time_util.check_str2date(date)  # 设置拟交易日期
 
     # 读取基础数据：截止T-1日
-    data = util.get_history_data([index1, index2], end_date=date - datetime.timedelta(days=1))
+    data = util.get_history_data(params['codeKeys'], end_date=date - datetime.timedelta(days=1))
 
     # 生成目标组合权重
     target_wgt = generate_target_wgt(data, date, date, params)
@@ -79,8 +75,6 @@ def invest(date, target_amount, params):
 
 
 def analyse(params, start_date=None, end_date=None):
-    index1 = params['index1']
-    index2 = params['index2']
     # 从账户持仓记录表读取持仓市值数据
     hold_mv = pd.read_csv(current_directory + '/csv/hold_record.csv').set_index('date')
     hold_mv.index = [time_util.str2date(e) for e in hold_mv.index]
@@ -94,7 +88,7 @@ def analyse(params, start_date=None, end_date=None):
     for t in hold_wgt.index:
         hold_wgt.loc[t] = hold_wgt.loc[t] / hold_mv.loc[t, 'amount']
 
-    hold_wgt = hold_wgt.loc[start_date:end_date, [index1, index2]]
+    hold_wgt = hold_wgt.loc[start_date:end_date, params['codeKeys']]
 
     # 计算净值
     return calculate_performance(start_date, end_date, hold_wgt, params)

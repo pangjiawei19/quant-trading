@@ -41,7 +41,7 @@ def rotation_strategy(data, start_date, end_date, params):
     Input:
         data: df(date*, index1, index2, ...), basic data
         start_date, end_date: 'yyyy-mm-dd' or datetime.date
-        params: dict, format {'index1':'hs300', 'index2':'csi500', 'day':20}
+        params: dict, format {'codeKeys':['hs300','csi500'], 'day':20}
     Output:
         target_wgt: df(trade_date*, index1, index2, ...) 目标权重
     """
@@ -49,8 +49,8 @@ def rotation_strategy(data, start_date, end_date, params):
     end_date = timeutil.check_str2date(end_date)
 
     day = params['day']
-    index1 = params['index1']
-    index2 = params['index2']
+    index1 = params['codeKeys'][0]
+    index2 = params['codeKeys'][1]
 
     start_date0 = start_date - datetime.timedelta(day) * 2
     dates0 = util.get_trading_dates(start_date0, end_date)
@@ -72,7 +72,7 @@ def rotation_strategy(data, start_date, end_date, params):
     return target_wgt
 
 
-def minimalism_strategy(data, start_date, end_date):
+def average_strategy(data, start_date, end_date):
     start_date = timeutil.check_str2date(start_date)
     end_date = timeutil.check_str2date(end_date)
 

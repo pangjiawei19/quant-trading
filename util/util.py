@@ -13,10 +13,11 @@ CODE_DICT = {
     'csi1000': 'sh000852',
     'hs300': 'sh000300',
     'csi500': 'sh000905',
-    'hs300etf': 'sh510300',
-    'csi500etf': 'sz159922',
-    'sp500etf': 'sh513500',
-    'nas100etf': 'sz159513',
+    'hs300Etf': 'sh510300',
+    'csi500Etf': 'sz159922',
+    'sp500Etf': 'sh513500',
+    'nas100Etf': 'sz159513',
+    'bondEtf': 'sh511010'
 }
 BASIC_DATA_START_DATE = datetime.date(2005, 2, 1)
 
