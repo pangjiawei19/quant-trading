@@ -15,7 +15,8 @@ def generate_target_wgt(data, start_date, end_date, params):
     wgt_calendar_csi1000 = strategy.calendar_strategy(data, start_date, end_date,
                                                       params={'index_id': 'csi1000', 't1': 1, 't2': 5})
     # wgt_rotation_20 = strategy.rotation_strategy(data, start_date, end_date, params)
-    wgt_rotation_20 = strategy.average_strategy(data, start_date, end_date)
+    # wgt_rotation_20 = strategy.average_strategy(data, start_date, end_date)
+    wgt_rotation_20 = strategy.rotation_average_strategy(data, start_date, end_date, params)
 
     # target_wgt = 0.5 * wgt_calendar_csi1000 + 0.5 * wgt_rotation_20  # 多策略目标组合整合
     target_wgt = 1 * wgt_rotation_20  # 多策略目标组合整合
@@ -36,7 +37,7 @@ def calculate_performance(start_date, end_date, hold_wgt, params):
     res[index_account] = account_res
 
     # 展示净值曲线图和业绩指标表
-    newColumns = params['codeKeys'] + [index_account]
+    # newColumns = params['codeKeys'] + [index_account]
     # res = res.loc[:, newColumns]
     res.plot(figsize=(16, 8), grid=True)
     performance = util.cal_period_perf_indicator(res)
@@ -71,8 +72,14 @@ def invest(date, target_amount, params):
     target_wgt = generate_target_wgt(data, date, date, params)
 
     # 输出目标持仓市值
-    target_mv = target_wgt * target_amount
-    return target_mv
+    valid_count = 0
+    for codeKey in params['codeKeys']:
+        if target_wgt.loc[date, codeKey] > 0:
+            valid_count += 1
+    if valid_count < 1:
+        return target_wgt * target_amount
+
+    return target_wgt * (target_amount / valid_count)
 
 
 def analyse(params, start_date=None, end_date=None):
