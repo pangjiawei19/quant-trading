@@ -12,14 +12,32 @@ current_directory = os.getcwd()
 
 def generate_target_wgt(data, start_date, end_date, params):
     # 调用策略模块生成目标组合权重
-    wgt_calendar_csi1000 = strategy.calendar_strategy(data, start_date, end_date,
-                                                      params={'index_id': 'csi1000', 't1': 1, 't2': 5})
+    # wgt_calendar_csi1000 = strategy.calendar_strategy(data, start_date, end_date,
+    #                                                   params={'index_id': 'csi1000', 't1': 1, 't2': 5})
     # wgt_rotation_20 = strategy.rotation_strategy(data, start_date, end_date, params)
     # wgt_rotation_20 = strategy.average_strategy(data, start_date, end_date)
-    wgt_rotation_20 = strategy.rotation_average_strategy(data, start_date, end_date, params)
+    # wgt_rotation_20 = strategy.rotation_average_strategy(data, start_date, end_date, params)
 
     # target_wgt = 0.5 * wgt_calendar_csi1000 + 0.5 * wgt_rotation_20  # 多策略目标组合整合
-    target_wgt = 1 * wgt_rotation_20  # 多策略目标组合整合
+    # target_wgt = 1 * wgt_rotation_20  # 多策略目标组合整合
+
+    target_wgt = None
+
+    for stegy in params['strategies']:
+        strategy_type = stegy['type']
+        strategy_wgt = pd.DataFrame()
+        if strategy_type == strategy.STRATEGY_TYPE_CALENDAR:
+            strategy_wgt = strategy.calendar_strategy(data, start_date, end_date, params)
+        elif strategy_type == strategy.STRATEGY_TYPE_ROTATION:
+            strategy_wgt = strategy.rotation_strategy(data, start_date, end_date, params)
+        elif strategy_type == strategy.STRATEGY_TYPE_AVERAGE:
+            strategy_wgt = strategy.average_strategy(data, start_date, end_date)
+        elif strategy_type == strategy.STRATEGY_TYPE_ROTATION_AVERAGE:
+            strategy_wgt = strategy.rotation_average_strategy(data, start_date, end_date, params)
+        if target_wgt is None:
+            target_wgt = stegy['weight'] * strategy_wgt
+        else:
+            target_wgt += stegy['weight'] * strategy_wgt
 
     return target_wgt
 

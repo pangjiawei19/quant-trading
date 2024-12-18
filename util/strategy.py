@@ -6,6 +6,11 @@ import pandas as pd
 import util.time_util as timeutil
 import util.util as util
 
+STRATEGY_TYPE_CALENDAR = 'calendar'
+STRATEGY_TYPE_ROTATION = 'rotation'
+STRATEGY_TYPE_AVERAGE = 'average'
+STRATEGY_TYPE_ROTATION_AVERAGE = 'rotation_average'
+
 
 # 日历策略
 def calendar_strategy(data, start_date, end_date, params):
