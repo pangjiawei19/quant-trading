@@ -15,7 +15,7 @@ codeKeys = [
 ]
 strategies = [
     # {'type': strategy.STRATEGY_TYPE_CALENDAR, 'weight': 1},
-    {'type': strategy.STRATEGY_TYPE_ROTATION_AVERAGE, 'weight': 1},
+    {'type': constant.STRATEGY_ROTATION_AVERAGE, 'weight': 1},
     # {'type': strategy.STRATEGY_TYPE_AVERAGE, 'weight': 1}
 ]
 params = {'day': 20, 't1': 1, 't2': 5, 'codeKeys': codeKeys, 'strategies': strategies, 'target_count': 3}

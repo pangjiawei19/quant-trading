@@ -3,6 +3,7 @@ import os
 
 import pandas as pd
 
+import util.constant as constant
 import util.strategy as strategy
 import util.time_util as time_util
 import util.util as util
@@ -26,13 +27,13 @@ def generate_target_wgt(data, start_date, end_date, params):
     for stegy in params['strategies']:
         strategy_type = stegy['type']
         strategy_wgt = pd.DataFrame()
-        if strategy_type == strategy.STRATEGY_TYPE_CALENDAR:
+        if strategy_type == constant.STRATEGY_CALENDAR:
             strategy_wgt = strategy.calendar_strategy(data, start_date, end_date, params)
-        elif strategy_type == strategy.STRATEGY_TYPE_ROTATION:
+        elif strategy_type == constant.STRATEGY_ROTATION:
             strategy_wgt = strategy.rotation_strategy(data, start_date, end_date, params)
-        elif strategy_type == strategy.STRATEGY_TYPE_AVERAGE:
+        elif strategy_type == constant.STRATEGY_AVERAGE:
             strategy_wgt = strategy.average_strategy(data, start_date, end_date)
-        elif strategy_type == strategy.STRATEGY_TYPE_ROTATION_AVERAGE:
+        elif strategy_type == constant.STRATEGY_ROTATION_AVERAGE:
             strategy_wgt = strategy.rotation_average_strategy(data, start_date, end_date, params)
 
         if target_wgt is None:
