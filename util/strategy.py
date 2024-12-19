@@ -15,7 +15,7 @@ STRATEGY_TYPE_ROTATION_AVERAGE = 'rotation_average'
 # 日历策略
 def calendar_strategy(data, start_date, end_date, params):
     """
-    params: {'index_id':'hs300', 't1':1, 't2':5}
+    params: {'codeKeys':['hs300'], 't1':1, 't2':5}
     """
     start_date = timeutil.check_str2date(start_date)
     end_date = timeutil.check_str2date(end_date)
@@ -36,13 +36,7 @@ def calendar_strategy(data, start_date, end_date, params):
 # 轮动策略（可以空仓版）
 def rotation_strategy(data, start_date, end_date, params):
     """
-    开盘前调用，返回目标组合权重
-    Input:
-        data: df(date*, index1, index2, ...), basic data
-        start_date, end_date: 'yyyy-mm-dd' or datetime.date
-        params: dict, format {'codeKeys':['hs300','csi500'], 'day':20}
-    Output:
-        target_wgt: df(trade_date*, index1, index2, ...) 目标权重
+    params: {'codeKeys':['hs300','csi500'], 'day':20}
     """
     start_date = timeutil.check_str2date(start_date)
     end_date = timeutil.check_str2date(end_date)
@@ -95,6 +89,8 @@ def rotation_average_strategy(data, start_date, end_date, params):
     end_date = timeutil.check_str2date(end_date)
 
     day = params['day']
+    target_count = params.get('target_count', len(data.columns))
+
     start_date0 = start_date - datetime.timedelta(day) * 2
 
     dates0 = util.get_trading_dates(start_date0, end_date)
@@ -105,10 +101,16 @@ def rotation_average_strategy(data, start_date, end_date, params):
     for i in range(1, len(target_wgt)):
         t = target_wgt.index[i]
         t0 = target_wgt.index[i - 1]
+        valid_list = []
         for column_name in data0.columns:
             index_last_value = range_day_ret.loc[t0, column_name]
             if not math.isnan(data0.loc[t0, column_name]) and index_last_value > 0:
-                target_wgt.loc[t, column_name] = 1
+                valid_list.append({'name': column_name, 'value': index_last_value})
+        if len(valid_list) > 0:
+            valid_list.sort(key=lambda x: x['value'], reverse=True)
+            loop_count = min(target_count, len(valid_list))
+            for j in range(0, loop_count):
+                target_wgt.loc[t, valid_list[j]['name']] = 1
 
     target_wgt = target_wgt.loc[start_date:end_date].fillna(0)
     return target_wgt

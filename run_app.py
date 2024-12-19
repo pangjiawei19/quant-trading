@@ -14,25 +14,25 @@ codeKeys = [
     constant.TARGET_BOND_ETF
 ]
 strategies = [
-    {'type': strategy.STRATEGY_TYPE_CALENDAR, 'weight': 1},
-    # {'type': strategy.STRATEGY_TYPE_ROTATION_AVERAGE, 'weight': 1},
+    # {'type': strategy.STRATEGY_TYPE_CALENDAR, 'weight': 1},
+    {'type': strategy.STRATEGY_TYPE_ROTATION_AVERAGE, 'weight': 1},
     # {'type': strategy.STRATEGY_TYPE_AVERAGE, 'weight': 1}
 ]
-params = {'day': 20, 't1': 1, 't2': 5, 'codeKeys': codeKeys, 'strategies': strategies}
+params = {'day': 20, 't1': 1, 't2': 5, 'codeKeys': codeKeys, 'strategies': strategies, 'target_count': 3}
 start_date = datetime.date(2020, 10, 27)  # 回测起始日期
-end_date = datetime.date(2020, 11, 10)  # 回测截止日期
+end_date = datetime.date(2024, 11, 10)  # 回测截止日期
 
 # --- backtesting test ---
-# results = app.backtest(start_date, end_date, params)
-# print('回测结果（%s-%s）：' % (start_date, end_date))
-# print(results)
+results = app.backtest(start_date, end_date, params)
+print('回测结果（%s-%s）：' % (start_date, end_date))
+print(results)
 # plt.show()
 
-# --- invest test ---
-invest_date = datetime.date(2020, 11, 9)  # 设置拟交易日期
-amount = 200000  # 目标投资金额
-target_hold = app.invest(invest_date, amount, params)
-print('目标持仓市值：')
+# # --- invest test ---
+# invest_date = datetime.date(2020, 11, 9)  # 设置拟交易日期
+# amount = 200000  # 目标投资金额
+# target_hold = app.invest(invest_date, amount, params)
+# print('目标持仓市值：')
 # print(target_hold)
 
 # --- analyse test ---
