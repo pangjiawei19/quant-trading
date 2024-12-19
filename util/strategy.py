@@ -15,18 +15,12 @@ STRATEGY_TYPE_ROTATION_AVERAGE = 'rotation_average'
 # 日历策略
 def calendar_strategy(data, start_date, end_date, params):
     """
-    开盘前调用，返回目标组合权重
-    Input:
-        data: df(date*, index1, index2, ...), basic data
-        start_date, end_date: 'yyyy-mm-dd' or datetime.date
-        params: dict, format {'index_id':'hs300', 't1':1, 't2':5}
-    Output:
-        target_wgt: df(trade_date*, index1, index2, ...) 目标权重
+    params: {'index_id':'hs300', 't1':1, 't2':5}
     """
     start_date = timeutil.check_str2date(start_date)
     end_date = timeutil.check_str2date(end_date)
 
-    index_id = params['index_id']
+    index_id = params['codeKeys'][0]
     t1 = params['t1']
     t2 = params['t2']
 

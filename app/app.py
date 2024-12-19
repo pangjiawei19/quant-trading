@@ -34,11 +34,13 @@ def generate_target_wgt(data, start_date, end_date, params):
             strategy_wgt = strategy.average_strategy(data, start_date, end_date)
         elif strategy_type == strategy.STRATEGY_TYPE_ROTATION_AVERAGE:
             strategy_wgt = strategy.rotation_average_strategy(data, start_date, end_date, params)
+
         if target_wgt is None:
             target_wgt = stegy['weight'] * strategy_wgt
         else:
             target_wgt += stegy['weight'] * strategy_wgt
 
+    # print(target_wgt)
     return target_wgt
 
 

@@ -3,16 +3,24 @@ import datetime
 import matplotlib.pyplot as plt
 
 import app.app as app
+from util import constant
 from util import strategy
 
-params = {'day': 20, 'codeKeys': ['hs300Etf', 'csi500Etf', 'sp500Etf', 'nas100Etf', 'bondEtf'],
-          'strategies': [
-              # {'type': strategy.STRATEGY_TYPE_ROTATION_AVERAGE, 'weight': 1},
-              {'type': strategy.STRATEGY_TYPE_AVERAGE, 'weight': 1}
-          ]}
-# params = {'day': 20, 'codeKeys': ['hs300', 'csi500']}
-start_date = datetime.date(2020, 11, 1)  # 回测起始日期
-end_date = datetime.date(2023, 11, 1)  # 回测截止日期
+codeKeys = [
+    constant.TARGET_HS_300_ETF,
+    constant.TARGET_CSI_500_ETF,
+    constant.TARGET_SP_500_ETF,
+    constant.TARGET_NAS_100_ETF,
+    constant.TARGET_BOND_ETF
+]
+strategies = [
+    {'type': strategy.STRATEGY_TYPE_CALENDAR, 'weight': 1},
+    # {'type': strategy.STRATEGY_TYPE_ROTATION_AVERAGE, 'weight': 1},
+    # {'type': strategy.STRATEGY_TYPE_AVERAGE, 'weight': 1}
+]
+params = {'day': 20, 't1': 1, 't2': 5, 'codeKeys': codeKeys, 'strategies': strategies}
+start_date = datetime.date(2020, 10, 27)  # 回测起始日期
+end_date = datetime.date(2020, 11, 10)  # 回测截止日期
 
 # --- backtesting test ---
 # results = app.backtest(start_date, end_date, params)
@@ -21,11 +29,11 @@ end_date = datetime.date(2023, 11, 1)  # 回测截止日期
 # plt.show()
 
 # --- invest test ---
-invest_date = datetime.date(2023, 11, 13)  # 设置拟交易日期
+invest_date = datetime.date(2020, 11, 9)  # 设置拟交易日期
 amount = 200000  # 目标投资金额
 target_hold = app.invest(invest_date, amount, params)
 print('目标持仓市值：')
-print(target_hold)
+# print(target_hold)
 
 # --- analyse test ---
 # results = app.analyse(params, start_date, end_date)

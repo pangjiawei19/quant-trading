@@ -5,20 +5,11 @@ import akshare as ak
 import numpy as np
 import pandas as pd
 
-from util import time_util
+import util.constant as constant
+import util.time_util as time_util
 
 current_directory = os.getcwd()
 
-CODE_DICT = {
-    'csi1000': 'sh000852',
-    'hs300': 'sh000300',
-    'csi500': 'sh000905',
-    'hs300Etf': 'sh510300',
-    'csi500Etf': 'sz159922',
-    'sp500Etf': 'sh513500',
-    'nas100Etf': 'sz159513',
-    'bondEtf': 'sh511010'
-}
 BASIC_DATA_START_DATE = datetime.date(2005, 2, 1)
 
 
@@ -67,7 +58,7 @@ def get_history_data(index_ids=None, end_date=None):
     # data.index = [time_util.str2date(e) for e in data.index]
 
     # 动态获取指数价格数据
-    codeKeys = index_ids if index_ids is not None else CODE_DICT.keys()
+    codeKeys = index_ids if index_ids is not None else constant.CODE_DICT.keys()
     data = generate_basic_data(codeKeys)
 
     if index_ids is not None:
@@ -114,7 +105,7 @@ def cal_period_perf_indicator(data, is_real_value=False):
 
 def generate_history_data_by_code(code, start_date):
     daily_df = ak.stock_zh_index_daily(symbol=code).set_index('date').loc[start_date:, ['close']]
-    if code == CODE_DICT['csi1000']:
+    if code == constant.CODE_DICT[constant.TARGET_CSI_1000]:
         history_df = pd.read_csv(current_directory + '/csv/csi1000_history.csv').set_index('date')
         history_df.index = [time_util.str2date(e) for e in history_df.index]
         history_df = history_df.loc[start_date:, ['close']]
@@ -126,6 +117,6 @@ def generate_history_data_by_code(code, start_date):
 def generate_basic_data(codeKeys, start_date=BASIC_DATA_START_DATE):
     data = pd.DataFrame()
     for key in codeKeys:
-        daily_df = generate_history_data_by_code(CODE_DICT[key], start_date)
+        daily_df = generate_history_data_by_code(constant.CODE_DICT[key], start_date)
         data[key] = daily_df['close']
     return data
