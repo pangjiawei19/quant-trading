@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 
 import app.app as app
 from util import constant
-from util import strategy
 
 codeKeys = [
     constant.TARGET_HS_300_ETF,
@@ -14,13 +13,13 @@ codeKeys = [
     constant.TARGET_BOND_ETF
 ]
 strategies = [
-    # {'type': strategy.STRATEGY_TYPE_CALENDAR, 'weight': 1},
-    {'type': constant.STRATEGY_ROTATION_AVERAGE, 'weight': 1},
-    # {'type': strategy.STRATEGY_TYPE_AVERAGE, 'weight': 1}
+    # {'type': constant.STRATEGY_CALENDAR, 'weight': 1},
+    # {'type': constant.STRATEGY_ROTATION, 'weight': 1},
+    {'type': constant.STRATEGY_AVERAGE, 'weight': 1}
 ]
-params = {'day': 20, 't1': 1, 't2': 5, 'codeKeys': codeKeys, 'strategies': strategies, 'target_count': 3}
-start_date = datetime.date(2020, 10, 27)  # 回测起始日期
-end_date = datetime.date(2024, 11, 10)  # 回测截止日期
+params = {'day': 20, 't1': 1, 't2': 5, 'codeKeys': codeKeys, 'strategies': strategies, 'target_count': 100}
+start_date = datetime.date(2021, 1, 27)  # 回测起始日期
+end_date = datetime.date(2024, 7, 10)  # 回测截止日期
 
 # --- backtesting test ---
 results = app.backtest(start_date, end_date, params)

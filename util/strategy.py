@@ -28,38 +28,6 @@ def calendar_strategy(data, start_date, end_date, params):
     return target_wgt
 
 
-# 轮动策略（可以空仓版）
-def rotation_strategy(data, start_date, end_date, params):
-    """
-    params: {'codeKeys':['hs300','csi500'], 'day':20}
-    """
-    start_date = timeutil.check_str2date(start_date)
-    end_date = timeutil.check_str2date(end_date)
-
-    day = params['day']
-    index1 = params['codeKeys'][0]
-    index2 = params['codeKeys'][1]
-
-    start_date0 = start_date - datetime.timedelta(day) * 2
-    dates0 = util.get_trading_dates(start_date0, end_date)
-    data0 = data.reindex(index=dates0)
-    range_day_ret = data0.shift(1) / data0.shift(day + 1) - 1  # 截止昨收的最近 N 个交易日涨幅
-
-    target_wgt = pd.DataFrame(0, index=data0.index, columns=data0.columns)
-    for i in range(1, len(target_wgt)):
-        t = target_wgt.index[i]
-        t0 = target_wgt.index[i - 1]
-        index1_last_value = range_day_ret.loc[t0, index1]
-        index2_last_value = range_day_ret.loc[t0, index2]
-        if index1_last_value >= index2_last_value and index1_last_value > 0:
-            target_wgt.loc[t, index1] = 1
-        elif index1_last_value < index2_last_value and index2_last_value > 0:
-            target_wgt.loc[t, index2] = 1
-
-    target_wgt = target_wgt.loc[start_date:end_date].fillna(0)
-    return target_wgt
-
-
 def average_strategy(data, start_date, end_date):
     start_date = timeutil.check_str2date(start_date)
     end_date = timeutil.check_str2date(end_date)
@@ -79,7 +47,7 @@ def average_strategy(data, start_date, end_date):
     return target_wgt
 
 
-def rotation_average_strategy(data, start_date, end_date, params):
+def rotation_strategy(data, start_date, end_date, params):
     start_date = timeutil.check_str2date(start_date)
     end_date = timeutil.check_str2date(end_date)
 

@@ -21,4 +21,3 @@ CODE_DICT = {
 STRATEGY_CALENDAR = 'calendar'
 STRATEGY_AVERAGE = 'average'
 STRATEGY_ROTATION = 'rotation'
-STRATEGY_ROTATION_AVERAGE = 'rotation_average'
