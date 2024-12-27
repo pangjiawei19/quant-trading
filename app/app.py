@@ -11,7 +11,7 @@ import util.util as util
 current_directory = os.getcwd()
 
 
-def generate_target_wgt(data, start_date, end_date, params):
+def generate_target_wgt(data, mode, start_date, end_date, params):
     target_wgt = None
 
     for stegy in params['strategies']:
@@ -22,7 +22,7 @@ def generate_target_wgt(data, start_date, end_date, params):
         elif strategy_type == constant.STRATEGY_ROTATION:
             strategy_wgt = strategy.rotation_strategy(data, start_date, end_date, params)
         elif strategy_type == constant.STRATEGY_AVERAGE:
-            strategy_wgt = strategy.average_strategy(data, start_date, end_date)
+            strategy_wgt = strategy.average_strategy(data, mode, start_date, end_date)
 
         if target_wgt is None:
             target_wgt = stegy['weight'] * strategy_wgt
@@ -62,7 +62,8 @@ def backtest(start_date, end_date, params):
     data = util.get_history_data(params['codeKeys'], end_date=end_date)
 
     # 调用策略模块生成目标组合权重
-    hold_wgt = generate_target_wgt(data, start_date, end_date, params)  # 假设每天都可以准确地执行交易计划
+    hold_wgt = generate_target_wgt(data, constant.STRATEGY_EXECUTE_MODE_BACKTEST, start_date, end_date,
+                                   params)  # 假设每天都可以准确地执行交易计划
 
     # 展示换手情况
     hold_wgt[params['codeKeys']].plot(figsize=(16, 8), kind='area', stacked=True, grid=True)
@@ -78,7 +79,7 @@ def invest(date, target_amount, params):
     data = util.get_history_data(params['codeKeys'], end_date=date - datetime.timedelta(days=1))
 
     # 生成目标组合权重
-    target_wgt = generate_target_wgt(data, date, date, params)
+    target_wgt = generate_target_wgt(data, constant.STRATEGY_EXECUTE_MODE_INVEST, date, date, params)
 
     # 输出目标持仓市值
     valid_count = 0

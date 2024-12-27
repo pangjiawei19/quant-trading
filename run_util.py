@@ -2,6 +2,7 @@ import datetime
 
 from util import strategy
 from util import util
+from util import constant
 
 # --- util test ---
 # start_date = datetime.date(2023, 12, 25)
@@ -25,4 +26,4 @@ end_date = datetime.date(2018, 6, 1)
 # print(hold_wgt)
 
 data = util.get_history_data(['hs300Etf', 'csi500Etf', 'sp500Etf', 'nas100Etf', 'bondEtf'])
-print(strategy.average_strategy(data, start_date, end_date))
+print(strategy.average_strategy(data, constant.STRATEGY_EXECUTE_MODE_BACKTEST, start_date, end_date))

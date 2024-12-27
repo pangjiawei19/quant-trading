@@ -3,6 +3,7 @@ import math
 
 import pandas as pd
 
+import util.constant as constant
 import util.time_util as timeutil
 import util.util as util
 
@@ -28,9 +29,13 @@ def calendar_strategy(data, start_date, end_date, params):
     return target_wgt
 
 
-def average_strategy(data, start_date, end_date):
+def average_strategy(data, mode, start_date, end_date):
     start_date = timeutil.check_str2date(start_date)
     end_date = timeutil.check_str2date(end_date)
+
+    if mode == constant.STRATEGY_EXECUTE_MODE_INVEST:
+        dates0 = util.get_trading_dates(start_date, end_date)
+        return pd.DataFrame(1, index=dates0, columns=data.columns)
 
     start_date0 = start_date - datetime.timedelta(2)
 
