@@ -9,7 +9,7 @@ import util.util as util
 
 
 # 日历策略
-def calendar_strategy(data, start_date, end_date, params):
+def calendar_strategy(data, mode, start_date, end_date, params):
     """
     params: {'codeKeys':['hs300'], 't1':1, 't2':5}
     """
@@ -52,7 +52,7 @@ def average_strategy(data, mode, start_date, end_date):
     return target_wgt
 
 
-def rotation_strategy(data, start_date, end_date, params):
+def rotation_strategy(data, mode, start_date, end_date, params):
     start_date = timeutil.check_str2date(start_date)
     end_date = timeutil.check_str2date(end_date)
 

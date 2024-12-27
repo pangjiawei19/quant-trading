@@ -18,9 +18,9 @@ def generate_target_wgt(data, mode, start_date, end_date, params):
         strategy_type = stegy['type']
         strategy_wgt = pd.DataFrame()
         if strategy_type == constant.STRATEGY_CALENDAR:
-            strategy_wgt = strategy.calendar_strategy(data, start_date, end_date, params)
+            strategy_wgt = strategy.calendar_strategy(data, mode, start_date, end_date, params)
         elif strategy_type == constant.STRATEGY_ROTATION:
-            strategy_wgt = strategy.rotation_strategy(data, start_date, end_date, params)
+            strategy_wgt = strategy.rotation_strategy(data, mode, start_date, end_date, params)
         elif strategy_type == constant.STRATEGY_AVERAGE:
             strategy_wgt = strategy.average_strategy(data, mode, start_date, end_date)
 

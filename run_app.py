@@ -14,11 +14,11 @@ codeKeys = [
 ]
 strategies = [
     # {'type': constant.STRATEGY_CALENDAR, 'weight': 1},
-    # {'type': constant.STRATEGY_ROTATION, 'weight': 1},
-    {'type': constant.STRATEGY_AVERAGE, 'weight': 1}
+    {'type': constant.STRATEGY_ROTATION, 'weight': 1},
+    # {'type': constant.STRATEGY_AVERAGE, 'weight': 1}
 ]
 params = {'day': 20, 't1': 1, 't2': 5, 'codeKeys': codeKeys, 'strategies': strategies, 'target_count': 100}
-start_date = datetime.date(2012, 5, 23)  # 回测起始日期
+start_date = datetime.date(2024, 5, 23)  # 回测起始日期
 end_date = datetime.date(2024, 5, 31)  # 回测截止日期
 
 # --- backtesting test ---
@@ -28,7 +28,7 @@ print(results)
 # plt.show()
 
 # # --- invest test ---
-# invest_date = datetime.date(2012, 5, 29)  # 设置拟交易日期
+# invest_date = datetime.date(2024, 12, 27)  # 设置拟交易日期
 # amount = 200000  # 目标投资金额
 # target_hold = app.invest(invest_date, amount, params)
 # print('目标持仓市值：')
