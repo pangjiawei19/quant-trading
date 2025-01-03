@@ -11,10 +11,10 @@ import util.util as util
 current_directory = os.getcwd()
 
 
-def generate_target_wgt(data, mode, start_date, end_date, params):
+def generate_target_wgt(data, mode, start_date, end_date, params, strategies):
     target_wgt = None
 
-    for stegy in params['strategies']:
+    for stegy in strategies:
         strategy_type = stegy['type']
         strategy_wgt = pd.DataFrame()
         if strategy_type == constant.STRATEGY_CALENDAR:
@@ -33,17 +33,16 @@ def generate_target_wgt(data, mode, start_date, end_date, params):
     return target_wgt
 
 
-def calculate_performance(start_date, end_date, hold_wgt, params):
-    index_account = 'account'
-
-    data = util.get_history_data(params['codeKeys'], end_date=end_date)
+def calculate_performance(start_date, end_date, hold_weights, code_keys):
+    data = util.get_history_data(code_keys, end_date=end_date)
     asset_ret = data.pct_change().loc[start_date:end_date]
     res = (1 + asset_ret).cumprod()
 
-    hold_asset_ret = hold_wgt.shift(1) * asset_ret
-    account_ret = hold_asset_ret.sum(axis=1)
-    account_res = (1 + account_ret).cumprod()
-    res[index_account] = account_res
+    for hold_wgt in hold_weights:
+        hold_asset_ret = hold_wgt['data'].shift(1) * asset_ret
+        account_ret = hold_asset_ret.sum(axis=1)
+        account_res = (1 + account_ret).cumprod()
+        res[hold_wgt['name']] = account_res
 
     # 展示净值曲线图和业绩指标表
     # newColumns = params['codeKeys'] + [index_account]
@@ -59,31 +58,39 @@ def backtest(start_date, end_date, params):
     end_date = time_util.check_str2date(end_date)
 
     # 读取基础数据
-    data = util.get_history_data(params['codeKeys'], end_date=end_date)
-
-    # 调用策略模块生成目标组合权重
-    hold_wgt = generate_target_wgt(data, constant.STRATEGY_EXECUTE_MODE_BACKTEST, start_date, end_date,
-                                   params)  # 假设每天都可以准确地执行交易计划
-
-    # 展示换手情况
-    hold_wgt[params['codeKeys']].plot(figsize=(16, 8), kind='area', stacked=True, grid=True)
+    code_keys = params['codeKeys']
+    data = util.get_history_data(code_keys, end_date=end_date)
 
     # 计算组合业绩
-    return calculate_performance(start_date, end_date, hold_wgt, params)
+    hold_weights = []
+    for strategy_group in params['strategy_groups']:
+        # 生成目标组合权重，假设每天都可以准确地执行交易计划
+        hold_wgt = generate_target_wgt(data, constant.STRATEGY_EXECUTE_MODE_BACKTEST,
+                                       start_date, end_date,
+                                       params, strategy_group['strategies'])
+        name = strategy_group['name']
+        hold_weights.append({'name': name, 'data': hold_wgt})
+
+        # 展示换手情况
+        hold_wgt[code_keys].plot(figsize=(16, 8), title=name, kind='area', stacked=True, grid=True)
+
+    return calculate_performance(start_date, end_date, hold_weights, code_keys)
 
 
 def invest(date, target_amount, params):
     date = time_util.check_str2date(date)  # 设置拟交易日期
 
     # 读取基础数据：截止T-1日
-    data = util.get_history_data(params['codeKeys'], end_date=date - datetime.timedelta(days=1))
+    code_keys = params['codeKeys']
+    data = util.get_history_data(code_keys, end_date=date - datetime.timedelta(days=1))
 
     # 生成目标组合权重
-    target_wgt = generate_target_wgt(data, constant.STRATEGY_EXECUTE_MODE_INVEST, date, date, params)
+    target_wgt = generate_target_wgt(data, constant.STRATEGY_EXECUTE_MODE_INVEST, date, date, params,
+                                     params['invest_strategy'])
 
     # 输出目标持仓市值
     valid_count = 0
-    for codeKey in params['codeKeys']:
+    for codeKey in code_keys:
         if target_wgt.loc[date, codeKey] > 0:
             valid_count += 1
     if valid_count < 1:
@@ -106,10 +113,12 @@ def analyse(params, start_date=None, end_date=None):
     for t in hold_wgt.index:
         hold_wgt.loc[t] = hold_wgt.loc[t] / hold_mv.loc[t, 'amount']
 
-    hold_wgt = hold_wgt.loc[start_date:end_date, params['codeKeys']]
+    code_keys = params['codeKeys']
+    hold_wgt = hold_wgt.loc[start_date:end_date, code_keys]
+    hold_weights = [{'name': 'hold', 'data': hold_wgt}]
 
     # 计算净值
-    return calculate_performance(start_date, end_date, hold_wgt, params)
+    return calculate_performance(start_date, end_date, hold_weights, code_keys)
 
 
 def record_hold(hold_info, record_date):

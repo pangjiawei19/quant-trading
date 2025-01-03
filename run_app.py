@@ -6,26 +6,51 @@ import app.app as app
 from util import constant
 
 codeKeys = [
+    # constant.TARGET_HS_300,
+    # constant.TARGET_CSI_500
     constant.TARGET_HS_300_ETF,
     constant.TARGET_CSI_500_ETF,
     constant.TARGET_SP_500_ETF,
     constant.TARGET_NAS_100_ETF,
     constant.TARGET_BOND_ETF
 ]
-strategies = [
+
+strategy_full_rotation = [
     # {'type': constant.STRATEGY_CALENDAR, 'weight': 1},
     {'type': constant.STRATEGY_ROTATION, 'weight': 1},
     # {'type': constant.STRATEGY_AVERAGE, 'weight': 1}
 ]
-params = {'day': 20, 't1': 1, 't2': 5, 'codeKeys': codeKeys, 'strategies': strategies, 'target_count': 100}
-start_date = datetime.date(2024, 5, 23)  # 回测起始日期
-end_date = datetime.date(2024, 5, 31)  # 回测截止日期
+
+strategy_full_average = [
+    # {'type': constant.STRATEGY_CALENDAR, 'weight': 1},
+    # {'type': constant.STRATEGY_ROTATION, 'weight': 1},
+    {'type': constant.STRATEGY_AVERAGE, 'weight': 1}
+]
+
+strategy_groups = [
+    {
+        'name': 'rotation',
+        'strategies': strategy_full_rotation
+    },
+    {
+        'name': 'average',
+        'strategies': strategy_full_average
+    }
+]
+
+params = {'day': 20, 't1': 1, 't2': 5,
+          'codeKeys': codeKeys,
+          'invest_strategy': strategy_full_rotation,
+          'strategy_groups': strategy_groups,
+          'target_count': 100}
+start_date = datetime.date(2012, 5, 23)  # 回测起始日期
+end_date = datetime.date(2024, 12, 31)  # 回测截止日期
 
 # --- backtesting test ---
 results = app.backtest(start_date, end_date, params)
 print('回测结果（%s-%s）：' % (start_date, end_date))
 print(results)
-# plt.show()
+plt.show()
 
 # # --- invest test ---
 # invest_date = datetime.date(2024, 12, 27)  # 设置拟交易日期
