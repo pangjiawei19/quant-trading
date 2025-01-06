@@ -1,1 +1,1 @@
-from script import generate_history_data
+from script import generate_trading_date
