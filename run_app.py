@@ -51,8 +51,8 @@ params = {'day': 20, 't1': 1, 't2': 5,
 # plt.show()
 
 # # --- invest test ---
-# invest_date = datetime.date(2025, 1, 6)  # 设置拟交易日期
-# amount = 5000  # 目标投资金额
+# invest_date = datetime.date(2025, 1, 8)  # 设置拟交易日期
+# amount = 1000000  # 目标投资金额
 # target_hold = app.invest(invest_date, amount, params)
 # print('目标持仓市值：')
 # print(target_hold)
@@ -66,12 +66,12 @@ params = {'day': 20, 't1': 1, 't2': 5,
 # plt.show()
 
 # --- record_hold test ---
-hold_info = {constant.TARGET_HS_300_ETF: 5365,
-             constant.TARGET_SP_500_ETF: 6190,
-             constant.TARGET_CSI_500_ETF: 4873,
-             constant.TARGET_NAS_100_ETF: 5959,
-             'amount': 22389}
-record_date = '2025-2-6'
+hold_info = {constant.TARGET_HS_300_ETF: 0,
+             constant.TARGET_SP_500_ETF: 0,
+             constant.TARGET_CSI_500_ETF: 0,
+             constant.TARGET_NAS_100_ETF: 983087,
+             'amount': 983087}
+record_date = '2025-1-8'
 app.record_hold(hold_info, record_date)
 
 # --- util test ---
