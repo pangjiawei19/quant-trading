@@ -23,6 +23,8 @@ def generate_target_wgt(data, mode, start_date, end_date, params, strategies):
             strategy_wgt = strategy.rotation_strategy(data, mode, start_date, end_date, params)
         elif strategy_type == constant.STRATEGY_AVERAGE:
             strategy_wgt = strategy.average_strategy(data, mode, start_date, end_date)
+        elif strategy_type == constant.STRATEGY_RECENT_TREND:
+            strategy_wgt = strategy.recent_trend_strategy(data, mode, start_date, end_date, params)
 
         if target_wgt is None:
             target_wgt = stegy['weight'] * strategy_wgt

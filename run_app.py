@@ -1,8 +1,11 @@
 import datetime
 
+import matplotlib.pyplot as plt
+
 import app.app as app
 from util import constant
-import matplotlib.pyplot as plt
+
+# plt
 
 codeKeys = [
     # constant.TARGET_HS_300,
@@ -12,6 +15,12 @@ codeKeys = [
     constant.TARGET_SP_500_ETF,
     constant.TARGET_NAS_100_ETF,
     # constant.TARGET_BOND_ETF
+]
+
+strategy_full_calendar = [
+    {'type': constant.STRATEGY_CALENDAR, 'weight': 1},
+    # {'type': constant.STRATEGY_ROTATION, 'weight': 1},
+    # {'type': constant.STRATEGY_AVERAGE, 'weight': 1}
 ]
 
 strategy_full_rotation = [
@@ -26,7 +35,18 @@ strategy_full_average = [
     {'type': constant.STRATEGY_AVERAGE, 'weight': 1}
 ]
 
+strategy_full_recent_trend = [
+    # {'type': constant.STRATEGY_CALENDAR, 'weight': 1},
+    # {'type': constant.STRATEGY_ROTATION, 'weight': 1},
+    # {'type': constant.STRATEGY_AVERAGE, 'weight': 1}
+    {'type': constant.STRATEGY_RECENT_TREND, 'weight': 1}
+]
+
 strategy_groups = [
+    {
+        'name': 'calendar',
+        'strategies': strategy_full_calendar
+    },
     {
         'name': 'rotation',
         'strategies': strategy_full_rotation
@@ -34,24 +54,44 @@ strategy_groups = [
     {
         'name': 'average',
         'strategies': strategy_full_average
+    },
+    {
+        'name': 'recent_trend',
+        'strategies': strategy_full_recent_trend
     }
 ]
 
-params = {'day': 20, 't1': 1, 't2': 5,
-          'codeKeys': codeKeys,
-          'invest_strategy': strategy_full_rotation,
+params_stg_calendar = {
+    't1': 1,
+    't2': 5,
+}
+
+params_stg_rotation = {
+    'day': 20
+}
+
+params_stg_recent_trend = {
+    'day': 20,
+    'long_threshold': 0.05,
+    'short_threshold': -0.05,
+}
+
+params = {'codeKeys': codeKeys,
+          'invest_strategy': strategy_full_recent_trend,
           'strategy_groups': strategy_groups,
-          'target_count': 100}
+          'params_stg_calendar': params_stg_calendar,
+          'params_stg_rotation': params_stg_rotation,
+          'params_stg_recent_trend': params_stg_recent_trend}
 # --- backtesting test ---
-# start_date = datetime.date(2009, 1, 1)  # 回测起始日期
-# end_date = datetime.date(2024, 12, 1)  # 回测截止日期
-# results = app.backtest(start_date, end_date, params)
-# print('回测结果（%s-%s）：' % (start_date, end_date))
-# print(results)
-# plt.show()
+start_date = datetime.date(2009, 1, 1)  # 回测起始日期
+end_date = datetime.date(2024, 12, 1)  # 回测截止日期
+results = app.backtest(start_date, end_date, params)
+print('回测结果（%s-%s）：' % (start_date, end_date))
+print(results)
+plt.show()
 
 # # --- invest test ---
-# invest_date = datetime.date(2025, 1, 8)  # 设置拟交易日期
+# invest_date = datetime.date(2024, 11, 18)  # 设置拟交易日期
 # amount = 1000000  # 目标投资金额
 # target_hold = app.invest(invest_date, amount, params)
 # print('目标持仓市值：')
@@ -66,13 +106,13 @@ params = {'day': 20, 't1': 1, 't2': 5,
 # plt.show()
 
 # --- record_hold test ---
-hold_info = {constant.TARGET_HS_300_ETF: 0,
-             constant.TARGET_SP_500_ETF: 0,
-             constant.TARGET_CSI_500_ETF: 0,
-             constant.TARGET_NAS_100_ETF: 983087,
-             'amount': 983087}
-record_date = '2025-1-8'
-app.record_hold(hold_info, record_date)
+# hold_info = {constant.TARGET_HS_300_ETF: 0,
+#              constant.TARGET_SP_500_ETF: 0,
+#              constant.TARGET_CSI_500_ETF: 0,
+#              constant.TARGET_NAS_100_ETF: 983087,
+#              'amount': 983087}
+# record_date = '2025-1-8'
+# app.record_hold(hold_info, record_date)
 
 # --- util test ---
 # start_date = datetime.date(2023, 12, 25)
