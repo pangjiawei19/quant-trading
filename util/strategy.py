@@ -119,3 +119,40 @@ def recent_trend_strategy(data, mode, start_date, end_date, params):
 
     target_wgt = target_wgt.loc[start_date:end_date].fillna(0)
     return target_wgt
+
+
+def mean_line_strategy(data, mode, start_date, end_date, params):
+    start_date = timeutil.check_str2date(start_date)
+    end_date = timeutil.check_str2date(end_date)
+
+    strategy_params = params['params_stg_mean_line']
+    n1 = strategy_params.get('n1', 10)
+    n2 = strategy_params.get('n2', 60)
+    long_threshold = strategy_params.get('long_threshold', 0.05)
+    short_threshold = strategy_params.get('short_threshold', -0.05)
+
+    start_date0 = start_date - datetime.timedelta(n2) * 2
+
+    dates0 = util.get_trading_dates(start_date0, end_date)
+    data0 = data.reindex(index=dates0)
+    range_day_ret = data0.rolling(window=n1).mean() / data0.rolling(window=n2).mean() - 1
+    # util.to_csv(range_day_ret, 'range_day_ret')
+
+    target_wgt = pd.DataFrame(0, index=data0.index, columns=data0.columns)
+
+    for i in range(1, len(target_wgt)):
+        t = target_wgt.index[i]
+        t0 = target_wgt.index[i - 1]
+        for column_name in data0.columns:
+            if not math.isnan(data0.loc[t0, column_name]):
+                index_last_value = range_day_ret.loc[t0, column_name]
+                if not math.isnan(index_last_value):
+                    if index_last_value > long_threshold:
+                        target_wgt.loc[t, column_name] = 1
+                    elif index_last_value < short_threshold:
+                        target_wgt.loc[t, column_name] = 0
+                    else:
+                        target_wgt.loc[t, column_name] = 0.5
+
+    target_wgt = target_wgt.loc[start_date:end_date].fillna(0)
+    return target_wgt

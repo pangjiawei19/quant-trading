@@ -12,7 +12,7 @@ codeKeys = [
     # constant.TARGET_CSI_500
     constant.TARGET_HS_300_ETF,
     constant.TARGET_CSI_500_ETF,
-    constant.TARGET_SP_500_ETF,
+    # constant.TARGET_SP_500_ETF,
     constant.TARGET_NAS_100_ETF,
     # constant.TARGET_BOND_ETF
 ]
@@ -42,22 +42,34 @@ strategy_full_recent_trend = [
     {'type': constant.STRATEGY_RECENT_TREND, 'weight': 1}
 ]
 
+strategy_full_mean_line = [
+    # {'type': constant.STRATEGY_CALENDAR, 'weight': 1},
+    # {'type': constant.STRATEGY_ROTATION, 'weight': 1},
+    # {'type': constant.STRATEGY_AVERAGE, 'weight': 1}
+    # {'type': constant.STRATEGY_RECENT_TREND, 'weight': 1}
+    {'type': constant.STRATEGY_MEAN_LINE, 'weight': 1}
+]
+
 strategy_groups = [
+    # {
+    #     'name': 'calendar',
+    #     'strategies': strategy_full_calendar
+    # },
+    # {
+    #     'name': 'rotation',
+    #     'strategies': strategy_full_rotation
+    # },
+    # {
+    #     'name': 'average',
+    #     'strategies': strategy_full_average
+    # },
+    # {
+    #     'name': 'recent_trend',
+    #     'strategies': strategy_full_recent_trend
+    # },
     {
-        'name': 'calendar',
-        'strategies': strategy_full_calendar
-    },
-    {
-        'name': 'rotation',
-        'strategies': strategy_full_rotation
-    },
-    {
-        'name': 'average',
-        'strategies': strategy_full_average
-    },
-    {
-        'name': 'recent_trend',
-        'strategies': strategy_full_recent_trend
+        'name': 'mean_line',
+        'strategies': strategy_full_mean_line
     }
 ]
 
@@ -76,12 +88,22 @@ params_stg_recent_trend = {
     'short_threshold': -0.05,
 }
 
-params = {'codeKeys': codeKeys,
-          'invest_strategy': strategy_full_recent_trend,
-          'strategy_groups': strategy_groups,
-          'params_stg_calendar': params_stg_calendar,
-          'params_stg_rotation': params_stg_rotation,
-          'params_stg_recent_trend': params_stg_recent_trend}
+params_stg_mean_line = {
+    'n1': 10,
+    'n2': 60,
+    'long_threshold': 0.05,
+    'short_threshold': -0.05,
+}
+
+params = {
+    'codeKeys': codeKeys,
+    'invest_strategy': strategy_full_recent_trend,
+    'strategy_groups': strategy_groups,
+    'params_stg_calendar': params_stg_calendar,
+    'params_stg_rotation': params_stg_rotation,
+    'params_stg_recent_trend': params_stg_recent_trend,
+    'params_stg_mean_line': params_stg_mean_line
+}
 # --- backtesting test ---
 start_date = datetime.date(2009, 1, 1)  # 回测起始日期
 end_date = datetime.date(2024, 12, 1)  # 回测截止日期

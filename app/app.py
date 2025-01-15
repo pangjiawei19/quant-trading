@@ -25,13 +25,15 @@ def generate_target_wgt(data, mode, start_date, end_date, params, strategies):
             strategy_wgt = strategy.average_strategy(data, mode, start_date, end_date)
         elif strategy_type == constant.STRATEGY_RECENT_TREND:
             strategy_wgt = strategy.recent_trend_strategy(data, mode, start_date, end_date, params)
+        elif strategy_type == constant.STRATEGY_MEAN_LINE:
+            strategy_wgt = strategy.mean_line_strategy(data, mode, start_date, end_date, params)
 
         if target_wgt is None:
             target_wgt = stegy['weight'] * strategy_wgt
         else:
             target_wgt += stegy['weight'] * strategy_wgt
 
-    # print(target_wgt)
+    # util.to_csv(target_wgt, 'target_wgt')
     return target_wgt
 
 

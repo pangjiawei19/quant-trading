@@ -120,3 +120,8 @@ def generate_basic_data(codeKeys, start_date=BASIC_DATA_START_DATE):
         daily_df = generate_history_data_by_code(constant.CODE_DICT[key], start_date)
         data[key] = daily_df['close']
     return data
+
+
+def to_csv(data, file_name):
+    print(data)
+    data.to_csv(current_directory + '/csv/' + file_name + '.csv', index=True, header=True)
