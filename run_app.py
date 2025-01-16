@@ -50,27 +50,40 @@ strategy_full_mean_line = [
     {'type': constant.STRATEGY_MEAN_LINE, 'weight': 1}
 ]
 
+strategy_full_boll_boll = [
+    # {'type': constant.STRATEGY_CALENDAR, 'weight': 1},
+    # {'type': constant.STRATEGY_ROTATION, 'weight': 1},
+    # {'type': constant.STRATEGY_AVERAGE, 'weight': 1}
+    # {'type': constant.STRATEGY_RECENT_TREND, 'weight': 1}
+    # {'type': constant.STRATEGY_MEAN_LINE, 'weight': 1}
+    {'type': constant.STRATEGY_BOLL_BOLL, 'weight': 1}
+]
+
 strategy_groups = [
-    # {
-    #     'name': 'calendar',
-    #     'strategies': strategy_full_calendar
-    # },
-    # {
-    #     'name': 'rotation',
-    #     'strategies': strategy_full_rotation
-    # },
-    # {
-    #     'name': 'average',
-    #     'strategies': strategy_full_average
-    # },
-    # {
-    #     'name': 'recent_trend',
-    #     'strategies': strategy_full_recent_trend
-    # },
+    {
+        'name': 'calendar',
+        'strategies': strategy_full_calendar
+    },
+    {
+        'name': 'rotation',
+        'strategies': strategy_full_rotation
+    },
+    {
+        'name': 'average',
+        'strategies': strategy_full_average
+    },
+    {
+        'name': 'recent_trend',
+        'strategies': strategy_full_recent_trend
+    },
     {
         'name': 'mean_line',
         'strategies': strategy_full_mean_line
-    }
+    },
+    {
+        'name': 'boll_boll',
+        'strategies': strategy_full_boll_boll
+    },
 ]
 
 params_stg_calendar = {
@@ -95,6 +108,11 @@ params_stg_mean_line = {
     'short_threshold': -0.05,
 }
 
+params_stg_boll_boll = {
+    'day': 20,
+    'multiple': 2
+}
+
 params = {
     'codeKeys': codeKeys,
     'invest_strategy': strategy_full_recent_trend,
@@ -102,11 +120,12 @@ params = {
     'params_stg_calendar': params_stg_calendar,
     'params_stg_rotation': params_stg_rotation,
     'params_stg_recent_trend': params_stg_recent_trend,
-    'params_stg_mean_line': params_stg_mean_line
+    'params_stg_mean_line': params_stg_mean_line,
+    'params_stg_boll_boll': params_stg_boll_boll
 }
 # --- backtesting test ---
-start_date = datetime.date(2009, 1, 1)  # 回测起始日期
-end_date = datetime.date(2024, 12, 1)  # 回测截止日期
+start_date = datetime.date(2017, 12, 31)  # 回测起始日期
+end_date = datetime.date(2024, 10, 31)  # 回测截止日期
 results = app.backtest(start_date, end_date, params)
 print('回测结果（%s-%s）：' % (start_date, end_date))
 print(results)

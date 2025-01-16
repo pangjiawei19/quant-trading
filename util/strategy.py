@@ -156,3 +156,53 @@ def mean_line_strategy(data, mode, start_date, end_date, params):
 
     target_wgt = target_wgt.loc[start_date:end_date].fillna(0)
     return target_wgt
+
+
+def boll_boll_target(data, target_name, day, multiple):
+    df = data.loc[:, [target_name]]
+    df['asset'] = df[target_name]
+    df['MA'] = df['asset'].rolling(window=day).mean()
+    df['std'] = df['asset'].rolling(window=day).std()
+    df['up'] = df['MA'] + multiple * df['std']
+    df['down'] = df['MA'] - multiple * df['std']
+    df['pos'] = 0
+    for i in range(1, len(df)):
+        t = df.index[i]
+        t0 = df.index[i - 1]
+        if df.loc[t0, 'asset'] > df.loc[t0, 'up']:
+            df.loc[t, 'pos'] = 1
+        elif df.loc[t0, 'asset'] < df.loc[t0, 'down']:
+            df.loc[t, 'pos'] = 0
+        elif df.loc[t0, 'pos'] == 1 and df.loc[t0, 'asset'] < df.loc[t0, 'MA']:
+            df.loc[t, 'pos'] = 0.5
+        elif df.loc[t0, 'pos'] == 0 and df.loc[t0, 'asset'] > df.loc[t0, 'MA']:
+            df.loc[t, 'pos'] = 0.5
+        else:
+            df.loc[t, 'pos'] = df.loc[t0, 'pos']
+
+    # util.to_csv(df, 'boll_boll_target_' + target_name)
+
+    return df
+
+
+def boll_bool_strategy(data, mode, start_date, end_date, params):
+    start_date = timeutil.check_str2date(start_date)
+    end_date = timeutil.check_str2date(end_date)
+
+    strategy_params = params['params_stg_boll_boll']
+    day = strategy_params.get('day', 20)
+    multiple = strategy_params.get('multiple', 2)
+
+    start_date0 = start_date - datetime.timedelta(day) * 2
+
+    dates0 = util.get_trading_dates(start_date0, end_date)
+    data0 = data.reindex(index=dates0)
+
+    target_wgt = pd.DataFrame(0, index=data0.index, columns=data0.columns)
+
+    for column_name in data0.columns:
+        df = boll_boll_target(data0, column_name, day, multiple)
+        target_wgt[column_name] = df['pos']
+
+    target_wgt = target_wgt.loc[start_date:end_date].fillna(0)
+    return target_wgt

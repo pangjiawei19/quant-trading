@@ -27,6 +27,8 @@ def generate_target_wgt(data, mode, start_date, end_date, params, strategies):
             strategy_wgt = strategy.recent_trend_strategy(data, mode, start_date, end_date, params)
         elif strategy_type == constant.STRATEGY_MEAN_LINE:
             strategy_wgt = strategy.mean_line_strategy(data, mode, start_date, end_date, params)
+        elif strategy_type == constant.STRATEGY_BOLL_BOLL:
+            strategy_wgt = strategy.boll_bool_strategy(data, mode, start_date, end_date, params)
 
         if target_wgt is None:
             target_wgt = stegy['weight'] * strategy_wgt
